@@ -1,0 +1,26 @@
+.cardContainer {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-start;
+	max-width: '100%';
+	text-overflow: ellipsis !important;
+	padding: 9px;
+	
+	}
+	
+.card {
+	width: 200px;
+    height: 250px;
+    overflow: hidden;
+    font-size: 15px;     
+	margin: 30px;
+	background-color: rgb(133, 25, 25);
+	box-shadow: 0 0 12px rgb(63, 63, 63);
+  	transition: 0.3s;
+    }
+
+    .card:hover {
+        overflow: visible;
+      }
+    
+   
