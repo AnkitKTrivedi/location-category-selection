@@ -6,22 +6,49 @@ import '../App.css';
 import styles from '../../src/styles/categories.module.css'; 
 
 
-const  Category = ({location}) => {
-    let categories = [];
-    if(location && location.state && !_.isEmpty(location.state)){
-        if(data.status === 'success' ){
-            let locations, param = location.state;
-            locations = data.data.locations.find(item => item.name === param.category);
-            if(param.branchName){
-                let branchCat = locations.branches.find(item => item.name === param.branchName);
-                categories = branchCat.categories;
+const  Category = ({location, history}) => {
+    const[categories, setCategories] = React.useState([]);
+    const[subCategory, setSubCategory] = React.useState('');
+    const [selectedCategory, setSelectedCategory] = React.useState({});
+
+    
+    React.useEffect(() => {
+        if(location && location.state && !_.isEmpty(location.state)){
+            if(data.status === 'success' ){
+                let locations, param = location.state, categoryList = [];
+                locations = data.data.locations.find(item => item.name === param.category);
+                if(param.branchName){
+                    let branchCat = locations.branches.find(item => item.name === param.branchName);
+                    categoryList = branchCat.categories;
+                }
+                else if(param.category){
+                    categoryList = getCategories(locations.branches);
+                }
+                setSelectedCategory(param);
+                setCategories(categoryList);
+                setSubCategory('');
+                  
             }
-            else if(param.category){
-                categories = getCategories(locations.branches);
-            }
-              
         }
+      }, [location]);
+    
+
+const onCategorySelection = (e, category) => {
+    if(e){
+        e.preventDefault();
+        e.stopPropagation();
     }
+   
+    if(category && category.subcategories){
+        setCategories(category.subcategories);
+        setSubCategory(category.name)
+    }
+};
+
+const backClick = () => {
+    setSubCategory('');
+    history.push(`category`, selectedCategory);
+}
 
     if(!categories.length)
     return (<React.Fragment>
@@ -32,11 +59,18 @@ const  Category = ({location}) => {
     return(
         <React.Fragment>
             <Header/>
+    <span className={styles.catalog}>
+        {subCategory ?  <img onClick={() => backClick()} className={styles.back} src={require('../assests/category/back.png')} alt='' height={30} width={45}/>
+                : '' }
+   
+        Equipment Cataloog {subCategory ? ` / ${subCategory}` : ''}</span>
          <div className={styles.cardContainer}>
              {categories.map(item => (
-                  <div className={styles.card} key={item.name + Math.random()}>
+                  <div className={styles.card} key={item.name + Math.random()} onClick={(e) => onCategorySelection(e,item)}>
                       <img src={getImageUrl(item.image)} alt="logo" height={200} width={200} />
-             <center>{item.name}</center>
+             <center>{item.name}
+             <img className={styles.arrow} src={require('../assests/category/arrow.png')} alt='' height={30} width={15}/>
+             </center>
                   </div>
              ))}
          </div>

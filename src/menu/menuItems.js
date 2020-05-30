@@ -7,8 +7,10 @@ const MenuItems = (props) => {
     let {menuName, subMenuItems} = props;
     const history = useHistory();
     const onClickCategory = (e, menuName, branchName) => {
-        if(e)
-        e.preventDefault();
+        if(e){
+            e.preventDefault();
+            e.stopPropagation();
+        } 
         let state = {
             category: menuName,
             branchName: branchName
